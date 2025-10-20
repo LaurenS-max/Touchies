@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8th Avenue Touchies Scoreboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .team {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 250px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            position: relative;
+        }
+        .team-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .player-list {
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: left;
+        }
+        .timer {
+            font-size: 40px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: red;
+        }
+        .photo-container {
+            width: 600px;
+            height: 600px;
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>8th Avenue Touchies Room Scoreboard</h1>
+
+    <label>Select Timer:</label>
+    <select id="timerOptions">
+        <option value="600">10 minutes</option>
+        <option value="420">7 minutes</option>
+        <option value="240">4 minutes</option>
+    </select>
+    <button onclick="startTimer()">Start Timer</button>
+    <button onclick="stopTimer()">Stop Timer</button>
+
+    <div class="timer" id="countdown">Select a timer</div>
+
+    <label>Choose Teams:</label>
+    <select id="teamASelect">
+        <option value="Team A">Team A</option>
+        <option value="Lions">Lions</option>
+        <option value="Tigers">Tigers</option>
+    </select>
+    <select id="teamBSelect">
+        <option value="Team B">Team B</option>
+        <option value="Eagles">Eagles</option>
+        <option value="Sharks">Sharks</option>
+    </select>
+    <button onclick="setTeams()">Set Teams</button>
+
+    <div class="score-container">
+        <div class="team">
+            <div class="team-name" id="teamA">Team A</div>
+            <label>Score:</label>
+            <input type="number" id="scoreA" placeholder="Enter score">
+            <button onclick="updateScore('scoreA', 'totalA')">Update Score</button>
+            <div class="total-score" id="totalA">0</div>
+
+            <label>Try Scorer:</label>
+            <input type="text" id="tryScorerA" placeholder="Enter scorer">
+            <button onclick="updateTryScorer('tryScorerA', 'scorerA')">Update Scorer</button>
+            <div class="player-list" id="scorerA">No try scored yet</div>
+
+            <label>Players:</label>
+            <textarea id="playersA" placeholder="Enter 10 player names + 2 reserves"></textarea>
+            <button onclick="updatePlayers('playersA', 'playerListA')">Update Players</button>
+            <div class="player-list" id="playerListA">No players listed</div>
+        </div>
+
+        <div class="photo-container">
+            <img src="pictures/8thavenuelogo.jpg" alt="Team Logo">
+        
+        </div>
+
+        <div class="team">
+            <div class="team-name" id="teamB">Team B</div>
+            <label>Score:</label>
+            <input type="number" id="scoreB" placeholder="Enter score">
+            <button onclick="updateScore('scoreB', 'totalB')">Update Score</button>
+            <div class="total-score" id="totalB">0</div>
+
+            <label>Try Scorer:</label>
+            <input type="text" id="tryScorerB" placeholder="Enter scorer">
+            <button onclick="updateTryScorer('tryScorerB', 'scorerB')">Update Scorer</button>
+            <div class="player-list" id="scorerB">No try scored yet</div>
+
+            <label>Players:</label>
+            <textarea id="playersB" placeholder="Enter 10 player names + 2 reserves"></textarea>
+            <button onclick="updatePlayers('playersB', 'playerListB')">Update Players</button>
+            <div class="player-list" id="playerListB">No players listed</div>
+        </div>
+
+
+        
+    </div>
+
+    <script>
+        let timerInterval;
+
+        function updateScore(inputId, displayId) {
+            let value = document.getElementById(inputId).value;
+            document.getElementById(displayId).textContent = value ? value : 0;
+        }
+
+        function setTeams() {
+            let teamAName = document.getElementById("teamASelect").value;
+            let teamBName = document.getElementById("teamBSelect").value;
+            document.getElementById("teamA").textContent = teamAName;
+            document.getElementById("teamB").textContent = teamBName;
+        }
+
+        function updateTryScorer(inputId, displayId) {
+            let scorer = document.getElementById(inputId).value;
+            document.getElementById(displayId).textContent = scorer ? `Try Scorer: ${scorer}` : "No try scored yet";
+        }
+
+        function updatePlayers(inputId, displayId) {
+            let players = document.getElementById(inputId).value;
+            document.getElementById(displayId).textContent = players ? `Players:\n${players}` : "No players listed";
+        }
+
+        function startTimer() {
+            let timeLeft = parseInt(document.getElementById("timerOptions").value);
+            let countdownDisplay = document.getElementById("countdown");
+
+            timerInterval = setInterval(function () {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+
+                countdownDisplay.textContent = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    countdownDisplay.textContent = "Time’s up!";
+                }
+
+                timeLeft--;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.getElementById("countdown").textContent = "Timer Stopped";
+        }
+
+
+
+        function updateName(inputId, displayId) {
+    let name = document.getElementById(inputId).value;
+    document.getElementById(displayId).textContent = name ? name : "Team";
+
+    // Update the scoreboard title
+    let teamA = document.getElementById("teamA").textContent;
+    let teamB = document.getElementById("teamB").textContent;
+    document.querySelector("h1").textContent = `8th Avenue Touchies Scoreboard - ${teamA} vs ${teamB}`;
+}
+function saveData() {
+    let teamA = document.getElementById("teamA").textContent;
+    let scoreA = document.getElementById("totalA").textContent;
+    let tryScorerA = document.getElementById("scorerA").textContent;
+    let playersA = document.getElementById("playerListA").textContent;
+
+    let teamB = document.getElementById("teamB").textContent;
+    let scoreB = document.getElementById("totalB").textContent;
+    let tryScorerB = document.getElementById("scorerB").textContent;
+    let playersB = document.getElementById("playerListB").textContent;
+
+    let data = {
+        teamA: teamA, scoreA: scoreA, tryScorerA: tryScorerA, playersA: playersA,
+        teamB: teamB, scoreB: scoreB, tryScorerB: tryScorerB, playersB: playersB
+    };
+
+    fetch("save_score.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.text())
+    .then(result => console.log("Saved:", result))
+    .catch(error => console.error("Error:", error));
+}
+
+// Call saveData() after each update
+function updateScore(inputId, displayId) {
+    let value = document.getElementById(inputId).value;
+    document.getElementById(displayId).textContent = value ? value : 0;
+    saveData();
+}
+
+function updateTryScorer(inputId, displayId) {
+    let scorer = document.getElementById(inputId).value;
+    document.getElementById(displayId).textContent = scorer ? `Try Scorer: ${scorer}` : "No try scored yet";
+    saveData();
+}
+
+function updatePlayers(inputId, displayId) {
+    let players = document.getElementById(inputId).value;
+    document.getElementById(displayId).textContent = players ? `Players:\n${players}` : "No players listed";
+    saveData();
+}
+
+function setTeams() {
+    let teamAName = document.getElementById("teamASelect").value;
+    let teamBName = document.getElementById("teamBSelect").value;
+    document.getElementById("teamA").textContent = teamAName;
+    document.getElementById("teamB").textContent = teamBName;
+    saveData();
+}
+</script>
+</body>
+</html>
