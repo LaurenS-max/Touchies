@@ -1,65 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8th Avenue Touchies Scoreboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .score-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .team {
-            border: 1px solid #ccc;
-            padding: 20px;
-            width: 250px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            position: relative;
-        }
-        .team-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .player-list {
-            font-size: 14px;
-            margin-top: 10px;
-            text-align: left;
-        }
-        .timer {
-            font-size: 40px;
-            font-weight: bold;
-            margin-top: 20px;
-            color: red;
-        }
-        .photo-container {
-            width: 600px;
-            height: 600px;
-        }
-        .photo-container img {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8th Avenue Touchies Scoreboard</title>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #1b1b1b, #292929);
+        color: #fff;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        margin: 20px 0;
+        font-size: 2.5em;
+        color: #08d1f9;
+        text-shadow: 2px 2px 10px rgba(8, 209, 249, 0.6);
+    }
+
+    .controls {
+        margin-bottom: 20px;
+    }
+
+    select, input, textarea, button {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin: 6px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    select, input, textarea {
+        background: #333;
+        color: #fff;
+    }
+
+    button {
+        background-color: #08f5f9;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background-color: #00f2ff;
+        transform: scale(1.05);
+    }
+
+    .score-container {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin: 30px auto;
+        max-width: 1200px;
+    }
+
+    .team {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        width: 300px;
+        padding: 20px;
+    }
+
+    .team-name {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #08f9f9;
+    }
+
+    .total-score {
+        font-size: 48px;
+        font-weight: bold;
+        color: #ff4747;
+        margin: 10px 0;
+    }
+
+    .photo-container {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .photo-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .player-list {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 13px;
+        text-align: left;
+        white-space: pre-line;
+        margin-top: 10px;
+        color: #ddd;
+    }
+
+    .timer {
+        font-size: 50px;
+        color: #ede905;
+        text-shadow: 0 0 15px rgba(213, 245, 7, 0.6);
+        margin: 20px 0;
+    }
+
+    footer {
+        margin-top: 40px;
+        font-size: 14px;
+        color: #aaa;
+    }
+</style>
 </head>
 <body>
-    <h1>8th Avenue Touchies Room Scoreboard</h1>
+<h1>8th Avenue Touchies Scoreboard</h1>
 
+<div class="controls">
     <label>Select Timer:</label>
     <select id="timerOptions">
         <option value="600">10 minutes</option>
         <option value="420">7 minutes</option>
         <option value="240">4 minutes</option>
+        <option value="180">3 minutes</option>
     </select>
-    <button onclick="startTimer()">Start Timer</button>
-    <button onclick="stopTimer()">Stop Timer</button>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
 
     <div class="timer" id="countdown">Select a timer</div>
 
@@ -75,143 +151,66 @@
         <option value="Sharks">Sharks</option>
     </select>
     <button onclick="setTeams()">Set Teams</button>
+</div>
 
-    <div class="score-container">
-        <div class="team">
-            <div class="team-name" id="teamA">Team A</div>
-            <label>Score:</label>
-            <input type="number" id="scoreA" placeholder="Enter score">
-            <button onclick="updateScore('scoreA', 'totalA')">Update Score</button>
-            <div class="total-score" id="totalA">0</div>
+<div class="score-container">
+    <div class="team">
+        <div class="team-name" id="teamA">Team A</div>
+        <label>Score:</label>
+        <input type="number" id="scoreA" placeholder="Enter score">
+        <button onclick="updateScore('scoreA', 'totalA')">Update</button>
+        <div class="total-score" id="totalA">0</div>
 
-            <label>Try Scorer:</label>
-            <input type="text" id="tryScorerA" placeholder="Enter scorer">
-            <button onclick="updateTryScorer('tryScorerA', 'scorerA')">Update Scorer</button>
-            <div class="player-list" id="scorerA">No try scored yet</div>
+        <label>Try Scorer:</label>
+        <input type="text" id="tryScorerA" placeholder="Enter scorer">
+        <button onclick="updateTryScorer('tryScorerA', 'scorerA')">Update</button>
+        <div class="player-list" id="scorerA">No try scored yet</div>
 
-            <label>Players:</label>
-            <textarea id="playersA" placeholder="Enter 10 player names + 2 reserves"></textarea>
-            <button onclick="updatePlayers('playersA', 'playerListA')">Update Players</button>
-            <div class="player-list" id="playerListA">No players listed</div>
-        </div>
-
-        <div class="photo-container">
-            <img src="pictures/8thavenuelogo.jpg" alt="Team Logo">
-        
-        </div>
-
-        <div class="team">
-            <div class="team-name" id="teamB">Team B</div>
-            <label>Score:</label>
-            <input type="number" id="scoreB" placeholder="Enter score">
-            <button onclick="updateScore('scoreB', 'totalB')">Update Score</button>
-            <div class="total-score" id="totalB">0</div>
-
-            <label>Try Scorer:</label>
-            <input type="text" id="tryScorerB" placeholder="Enter scorer">
-            <button onclick="updateTryScorer('tryScorerB', 'scorerB')">Update Scorer</button>
-            <div class="player-list" id="scorerB">No try scored yet</div>
-
-            <label>Players:</label>
-            <textarea id="playersB" placeholder="Enter 10 player names + 2 reserves"></textarea>
-            <button onclick="updatePlayers('playersB', 'playerListB')">Update Players</button>
-            <div class="player-list" id="playerListB">No players listed</div>
-        </div>
-
-
-        
+        <label>Players:</label>
+        <textarea id="playersA" rows="4" placeholder="Enter 10 player names + 2 reserves"></textarea>
+        <button onclick="updatePlayers('playersA', 'playerListA')">Update</button>
+        <div class="player-list" id="playerListA">No players listed</div>
     </div>
 
-    <script>
-        let timerInterval;
+    <div class="photo-container">
+        <img src="8thavenuelogo.jpg" alt="Team Logo">
+    </div>
+    <div class="team">
+        <div class="team-name" id="teamB">Team B</div>
+        <label>Score:</label>
+        <input type="number" id="scoreB" placeholder="Enter score">
+        <button onclick="updateScore('scoreB', 'totalB')">Update</button>
+        <div class="total-score" id="totalB">0</div>
 
-        function updateScore(inputId, displayId) {
-            let value = document.getElementById(inputId).value;
-            document.getElementById(displayId).textContent = value ? value : 0;
-        }
+        <label>Try Scorer:</label>
+        <input type="text" id="tryScorerB" placeholder="Enter scorer">
+        <button onclick="updateTryScorer('tryScorerB', 'scorerB')">Update</button>
+        <div class="player-list" id="scorerB">No try scored yet</div>
 
-        function setTeams() {
-            let teamAName = document.getElementById("teamASelect").value;
-            let teamBName = document.getElementById("teamBSelect").value;
-            document.getElementById("teamA").textContent = teamAName;
-            document.getElementById("teamB").textContent = teamBName;
-        }
+        <label>Players:</label>
+        <textarea id="playersB" rows="4" placeholder="Enter 10 player names + 2 reserves"></textarea>
+        <button onclick="updatePlayers('playersB', 'playerListB')">Update</button>
+        <div class="player-list" id="playerListB">No players listed</div>
+    </div>
+</div>
 
-        function updateTryScorer(inputId, displayId) {
-            let scorer = document.getElementById(inputId).value;
-            document.getElementById(displayId).textContent = scorer ? `Try Scorer: ${scorer}` : "No try scored yet";
-        }
+<footer>© 2025 8th Avenue Touchies | Designed with 💪 Passion for the Game</footer>
 
-        function updatePlayers(inputId, displayId) {
-            let players = document.getElementById(inputId).value;
-            document.getElementById(displayId).textContent = players ? `Players:\n${players}` : "No players listed";
-        }
+<script>
+let timerInterval;
 
-        function startTimer() {
-            let timeLeft = parseInt(document.getElementById("timerOptions").value);
-            let countdownDisplay = document.getElementById("countdown");
-
-            timerInterval = setInterval(function () {
-                let minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
-
-                countdownDisplay.textContent = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    countdownDisplay.textContent = "Time’s up!";
-                }
-
-                timeLeft--;
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-            document.getElementById("countdown").textContent = "Timer Stopped";
-        }
-
-
-
-        function updateName(inputId, displayId) {
-    let name = document.getElementById(inputId).value;
-    document.getElementById(displayId).textContent = name ? name : "Team";
-
-    // Update the scoreboard title
-    let teamA = document.getElementById("teamA").textContent;
-    let teamB = document.getElementById("teamB").textContent;
-    document.querySelector("h1").textContent = `8th Avenue Touchies Scoreboard - ${teamA} vs ${teamB}`;
-}
-function saveData() {
-    let teamA = document.getElementById("teamA").textContent;
-    let scoreA = document.getElementById("totalA").textContent;
-    let tryScorerA = document.getElementById("scorerA").textContent;
-    let playersA = document.getElementById("playerListA").textContent;
-
-    let teamB = document.getElementById("teamB").textContent;
-    let scoreB = document.getElementById("totalB").textContent;
-    let tryScorerB = document.getElementById("scorerB").textContent;
-    let playersB = document.getElementById("playerListB").textContent;
-
-    let data = {
-        teamA: teamA, scoreA: scoreA, tryScorerA: tryScorerA, playersA: playersA,
-        teamB: teamB, scoreB: scoreB, tryScorerB: tryScorerB, playersB: playersB
-    };
-
-    fetch("save_score.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.text())
-    .then(result => console.log("Saved:", result))
-    .catch(error => console.error("Error:", error));
-}
-
-// Call saveData() after each update
 function updateScore(inputId, displayId) {
     let value = document.getElementById(inputId).value;
     document.getElementById(displayId).textContent = value ? value : 0;
+    saveData();
+}
+
+function setTeams() {
+    let teamAName = document.getElementById("teamASelect").value;
+    let teamBName = document.getElementById("teamBSelect").value;
+    document.getElementById("teamA").textContent = teamAName;
+    document.getElementById("teamB").textContent = teamBName;
+    document.querySelector("h1").textContent = `8th Avenue Touchies Scoreboard - ${teamAName} vs ${teamBName}`;
     saveData();
 }
 
@@ -227,12 +226,49 @@ function updatePlayers(inputId, displayId) {
     saveData();
 }
 
-function setTeams() {
-    let teamAName = document.getElementById("teamASelect").value;
-    let teamBName = document.getElementById("teamBSelect").value;
-    document.getElementById("teamA").textContent = teamAName;
-    document.getElementById("teamB").textContent = teamBName;
-    saveData();
+function startTimer() {
+    let timeLeft = parseInt(document.getElementById("timerOptions").value);
+    let countdownDisplay = document.getElementById("countdown");
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(function () {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        countdownDisplay.textContent = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            countdownDisplay.textContent = "⏱ Time’s up!";
+            countdownDisplay.style.color = "#ff4747";
+        }
+        timeLeft--;
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    document.getElementById("countdown").textContent = "⏸ Timer Stopped";
+}
+
+function saveData() {
+    let data = {
+        teamA: document.getElementById("teamA").textContent,
+        scoreA: document.getElementById("totalA").textContent,
+        tryScorerA: document.getElementById("scorerA").textContent,
+        playersA: document.getElementById("playerListA").textContent,
+        teamB: document.getElementById("teamB").textContent,
+        scoreB: document.getElementById("totalB").textContent,
+        tryScorerB: document.getElementById("scorerB").textContent,
+        playersB: document.getElementById("playerListB").textContent
+    };
+
+    fetch("save_score.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(console.log)
+    .catch(console.error);
 }
 </script>
 </body>
