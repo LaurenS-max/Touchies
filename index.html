@@ -78,7 +78,7 @@
     }
 
     .total-score {
-        font-size: 48px;
+        font-size: 200px;
         font-weight: bold;
         color: #ff4747;
         margin: 10px 0;
@@ -260,13 +260,44 @@ function togglePauseResume() {
         btn.textContent = "Resume";
     }
 }
-function updateScore(inputId, displayId) {
+
+        function updateScore(inputId, displayId) {
     let value = document.getElementById(inputId).value;
     document.getElementById(displayId).textContent = value ? value : 0;
     saveData();
-}    
+}
 
+function setTeams() {
+    let teamAName = document.getElementById("teamASelect").value;
+    let teamBName = document.getElementById("teamBSelect").value;
+    document.getElementById("teamA").textContent = teamAName;
+    document.getElementById("teamB").textContent = teamBName;
+    document.querySelector("h1").textContent = `8th Avenue Touchies Scoreboard - ${teamAName} vs ${teamBName}`;
+    saveData();
+}
+ 
+
+function saveData() {
+    let data = {
+        teamA: document.getElementById("teamA").textContent,
+        scoreA: document.getElementById("totalA").textContent,
+        teamB: document.getElementById("teamB").textContent,
+        scoreB: document.getElementById("totalB").textContent,
+    
+    
+    };
+
+    fetch("save_score.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(console.log)
+    .catch(console.error);
+}
+
+ 
 </script>
 </body>
 </html>
-
