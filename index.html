@@ -129,14 +129,16 @@
 <div class="controls">
     <label>Select Timer:</label>
     <select id="timerOptions">
-        <option value="600">10 minutes</option>
+
         <option value="420">7 minutes</option>
         <option value="240">4 minutes</option>
         <option value="180">3 minutes</option>
+
     </select>
     <button onclick="startTimer()">Start</button>
+    <button id="toggleBtn" onclick="togglePauseResume()">Pause</button>
     <button onclick="stopTimer()">Stop</button>
-
+    
     <div class="timer" id="countdown">Select a timer</div>
 
     <label>Choose Teams:</label>
@@ -161,15 +163,6 @@
         <button onclick="updateScore('scoreA', 'totalA')">Update</button>
         <div class="total-score" id="totalA">0</div>
 
-        <label>Try Scorer:</label>
-        <input type="text" id="tryScorerA" placeholder="Enter scorer">
-        <button onclick="updateTryScorer('tryScorerA', 'scorerA')">Update</button>
-        <div class="player-list" id="scorerA">No try scored yet</div>
-
-        <label>Players:</label>
-        <textarea id="playersA" rows="4" placeholder="Enter 10 player names + 2 reserves"></textarea>
-        <button onclick="updatePlayers('playersA', 'playerListA')">Update</button>
-        <div class="player-list" id="playerListA">No players listed</div>
     </div>
 
     <div class="photo-container">
@@ -180,96 +173,74 @@
         <label>Score:</label>
         <input type="number" id="scoreB" placeholder="Enter score">
         <button onclick="updateScore('scoreB', 'totalB')">Update</button>
-        <div class="total-score" id="totalB">0</div>
-
-        <label>Try Scorer:</label>
-        <input type="text" id="tryScorerB" placeholder="Enter scorer">
-        <button onclick="updateTryScorer('tryScorerB', 'scorerB')">Update</button>
-        <div class="player-list" id="scorerB">No try scored yet</div>
-
-        <label>Players:</label>
-        <textarea id="playersB" rows="4" placeholder="Enter 10 player names + 2 reserves"></textarea>
-        <button onclick="updatePlayers('playersB', 'playerListB')">Update</button>
-        <div class="player-list" id="playerListB">No players listed</div>
+        <div class="total-score" id="totalB">0</div>    
     </div>
 </div>
 
-<footer>© 2025 8th Avenue Touchies | Designed with 💪 Passion for the Game</footer>
+<footer>© 2025 8th Avenue Touchies | THEY ARE NOT LIKE US</footer>
 
 <script>
 let timerInterval;
-
-function updateScore(inputId, displayId) {
-    let value = document.getElementById(inputId).value;
-    document.getElementById(displayId).textContent = value ? value : 0;
-    saveData();
-}
-
-function setTeams() {
-    let teamAName = document.getElementById("teamASelect").value;
-    let teamBName = document.getElementById("teamBSelect").value;
-    document.getElementById("teamA").textContent = teamAName;
-    document.getElementById("teamB").textContent = teamBName;
-    document.querySelector("h1").textContent = `8th Avenue Touchies Scoreboard - ${teamAName} vs ${teamBName}`;
-    saveData();
-}
-
-function updateTryScorer(inputId, displayId) {
-    let scorer = document.getElementById(inputId).value;
-    document.getElementById(displayId).textContent = scorer ? `Try Scorer: ${scorer}` : "No try scored yet";
-    saveData();
-}
-
-function updatePlayers(inputId, displayId) {
-    let players = document.getElementById(inputId).value;
-    document.getElementById(displayId).textContent = players ? `Players:\n${players}` : "No players listed";
-    saveData();
-}
+let timeLeft = 0;
+let isPaused = false;
+let isRunning = false;
 
 function startTimer() {
-    let timeLeft = parseInt(document.getElementById("timerOptions").value);
-    let countdownDisplay = document.getElementById("countdown");
+    timeLeft = parseInt(document.getElementById("timerOptions").value);
+    const countdownDisplay = document.getElementById("countdown");
+    const toggleBtn = document.getElementById("toggleBtn");
 
     clearInterval(timerInterval);
-    timerInterval = setInterval(function () {
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-        countdownDisplay.textContent = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            countdownDisplay.textContent = "⏱ Time’s up!";
-            countdownDisplay.style.color = "#ff4747";
+    isRunning = true;
+    isPaused = false;
+    toggleBtn.textContent = "Pause";
+
+    timerInterval = setInterval(() => {
+        if (!isPaused) {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            countdownDisplay.textContent = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                countdownDisplay.textContent = "⏱ Time’s up!";
+                countdownDisplay.style.color = "#ff4747";
+                isRunning = false;
+            }
+            timeLeft--;
         }
-        timeLeft--;
     }, 1000);
+}
+
+function pauseTimer() {
+    isPaused = true;
+    document.getElementById("countdown").textContent = "⏸ Timer Paused";
+}
+
+function resumeTimer() {
+    isPaused = false;
 }
 
 function stopTimer() {
     clearInterval(timerInterval);
+    isRunning = false;
+    isPaused = false;
     document.getElementById("countdown").textContent = "⏸ Timer Stopped";
 }
 
-function saveData() {
-    let data = {
-        teamA: document.getElementById("teamA").textContent,
-        scoreA: document.getElementById("totalA").textContent,
-        tryScorerA: document.getElementById("scorerA").textContent,
-        playersA: document.getElementById("playerListA").textContent,
-        teamB: document.getElementById("teamB").textContent,
-        scoreB: document.getElementById("totalB").textContent,
-        tryScorerB: document.getElementById("scorerB").textContent,
-        playersB: document.getElementById("playerListB").textContent
-    };
+function togglePauseResume() {
+    const btn = document.getElementById("toggleBtn");
 
-    fetch("save_score.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.text())
-    .then(console.log)
-    .catch(console.error);
+    if (!isRunning) return; // prevent toggling before start
+
+    if (isPaused) {
+        resumeTimer();
+        btn.textContent = "Pause";
+    } else {
+        pauseTimer();
+        btn.textContent = "Resume";
+    }
 }
+
 </script>
 </body>
 </html>
