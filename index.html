@@ -260,7 +260,13 @@ function togglePauseResume() {
         btn.textContent = "Resume";
     }
 }
+function updateScore(inputId, displayId) {
+    let value = document.getElementById(inputId).value;
+    document.getElementById(displayId).textContent = value ? value : 0;
+    saveData();
+}    
 
 </script>
 </body>
 </html>
+
